@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         // Define a custom theme for text
         textTheme: const TextTheme(
-          headline6: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          titleLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           bodyText2: TextStyle(fontSize: 16),
         ),
       ),
