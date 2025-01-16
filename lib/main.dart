@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
         // Define a custom theme for text
         textTheme: const TextTheme(
           titleLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          bodyText2: TextStyle(fontSize: 16),
+          bodyMedium: TextStyle(fontSize: 16),
         ),
       ),
       home: const WarehousePage(),
