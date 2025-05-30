@@ -15,7 +15,6 @@ class MyApp extends StatelessWidget {
       title: 'Datos de Almacén',
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        // Define a custom theme for text
         textTheme: const TextTheme(
           titleLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           bodyMedium: TextStyle(fontSize: 16),
@@ -36,14 +35,13 @@ class WarehousePage extends StatefulWidget {
 class _WarehousePageState extends State<WarehousePage> {
   final String apiUrl =
       'https://disdelsagt.com/MyWsMaestro/api/Conteo/GetAlmacen/SBO_DISDELSA_2013';
-  
+
   List<Map<String, dynamic>> _data = [];
   bool _isLoading = true;
   String _errorMessage = '';
   int _page = 1;
-  int _itemsPerPage = 5; // Number of items per page
+  final int _itemsPerPage = 5;
 
-  // Fetch data from the API
   Future<void> fetchData() async {
     setState(() {
       _isLoading = true;
@@ -58,30 +56,19 @@ class _WarehousePageState extends State<WarehousePage> {
 
         setState(() {
           _data = jsonData.map((item) {
-            var logData = item['<Log>k__BackingField'];
+            var logData = item['Log'];
+
             return {
-              'NombreAlmacen': item['<NombreAlmacen>k__BackingField'],
-              'WhsCode': item['<WhsCode>k__BackingField'] ?? 'N/A',
-              'Descripcion': item['<Descripcion>k__BackingField'],
-              'Direccion': item['<Direccion>k__BackingField'],
-              'Bodeguero': item['<Bodeguero>k__BackingField'] ?? 'N/A',
-              'Correo': item['<Correo>k__BackingField'] ?? 'N/A',
-              'IdUsuario': item['<IdUsuario>k__BackingField'],
-              'FechaCreacion': logData['<FechaCreacion>k__BackingField'],
-              'IdUsuarioCreacion': logData['<IdUsuarioCreacion>k__BackingField'] ?? 'N/A',
-              'IdHostCreacion': logData['<IdHostCreacion>k__BackingField'] ?? 'N/A',
-              'FechaModificacion': logData['<FechaModificacion>k__BackingField'],
-              'IdUsuarioModificacion': logData['<IdUsuarioModificacion>k__BackingField'] ?? 'N/A',
-              'IdHostModificacion': logData['<IdHostModificacion>k__BackingField'] ?? 'N/A',
-              'Browser': logData['<Browser>k__BackingField'] ?? 'N/A',
-              'SO': logData['<SO>k__BackingField'] ?? 'N/A',
-              'Pantalla': logData['<Pantalla>k__BackingField'] ?? 'N/A',
-              'Dispositivo': logData['<Dispositivo>k__BackingField'] ?? 'N/A',
-              'FechaSistema': logData['<FechaSistema>k__BackingField'],
-              'Activo': logData['<Activo>k__BackingField'],
-              'Eliminado': logData['<Eliminado>k__BackingField'],
-              'Estatus': logData['<Estatus>k__BackingField'],
-              'DBSAP': logData['<DBSAP>k__BackingField'],
+              'NombreAlmacen': item['NombreAlmacen'] ?? 'N/A',
+              'WhsCode': item['WhsCode'] ?? 'N/A',
+              'Descripcion': item['Descripcion'] ?? 'N/A',
+              'Direccion': item['Direccion'] ?? 'N/A',
+              'Bodeguero': item['Bodeguero'] ?? 'N/A',
+              'Correo': item['Correo'] ?? 'N/A',
+              'IdUsuario': item['IdUsuario'] ?? 'N/A',
+              'FechaCreacion': logData?['<FechaCreacion>k__BackingField'] ?? 'N/A',
+              'Activo': logData?['<Activo>k__BackingField'] ?? false,
+              'DBSAP': logData?['<DBSAP>k__BackingField'] ?? 'N/A',
             };
           }).toList();
           _isLoading = false;
@@ -100,10 +87,9 @@ class _WarehousePageState extends State<WarehousePage> {
   @override
   void initState() {
     super.initState();
-    fetchData(); // Fetch the data when the page loads
+    fetchData();
   }
 
-  // Paginate the data
   List<Map<String, dynamic>> getPagedData() {
     int startIndex = (_page - 1) * _itemsPerPage;
     int endIndex = startIndex + _itemsPerPage;
@@ -128,7 +114,7 @@ class _WarehousePageState extends State<WarehousePage> {
             _isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : _errorMessage.isNotEmpty
-                    ? Center(child: Text(_errorMessage, style: TextStyle(color: Colors.red)))
+                    ? Center(child: Text(_errorMessage, style: const TextStyle(color: Colors.red)))
                     : Expanded(
                         child: Column(
                           children: [
@@ -136,17 +122,18 @@ class _WarehousePageState extends State<WarehousePage> {
                               opacity: _isLoading ? 0.0 : 1.0,
                               duration: const Duration(seconds: 1),
                               child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
                                 child: DataTable(
                                   headingRowColor:
                                       MaterialStateColor.resolveWith((states) => Colors.blue.shade100),
                                   columns: const [
-                                    DataColumn(label: Text('Almacen')),
+                                    DataColumn(label: Text('Almacén')),
                                     DataColumn(label: Text('WhsCode')),
-                                    DataColumn(label: Text('Descripcion')),
-                                    DataColumn(label: Text('Direccion')),
+                                    DataColumn(label: Text('Descripción')),
+                                    DataColumn(label: Text('Dirección')),
                                     DataColumn(label: Text('Bodeguero')),
                                     DataColumn(label: Text('Correo')),
-                                    DataColumn(label: Text('Fecha Creacion')),
+                                    DataColumn(label: Text('Fecha Creación')),
                                     DataColumn(label: Text('Activo')),
                                     DataColumn(label: Text('DBSAP')),
                                   ],
@@ -162,15 +149,15 @@ class _WarehousePageState extends State<WarehousePage> {
                                                   : Colors.transparent;
                                             }),
                                             cells: [
-                                              DataCell(Text(item['NombreAlmacen'])),
-                                              DataCell(Text(item['WhsCode'])),
-                                              DataCell(Text(item['Descripcion'])),
-                                              DataCell(Text(item['Direccion'])),
-                                              DataCell(Text(item['Bodeguero'])),
-                                              DataCell(Text(item['Correo'])),
-                                              DataCell(Text(item['FechaCreacion'])),
+                                              DataCell(Text(item['NombreAlmacen'].toString())),
+                                              DataCell(Text(item['WhsCode'].toString())),
+                                              DataCell(Text(item['Descripcion'].toString())),
+                                              DataCell(Text(item['Direccion'].toString())),
+                                              DataCell(Text(item['Bodeguero'].toString())),
+                                              DataCell(Text(item['Correo'].toString())),
+                                              DataCell(Text(item['FechaCreacion'].toString())),
                                               DataCell(Text(item['Activo'].toString())),
-                                              DataCell(Text(item['DBSAP'])),
+                                              DataCell(Text(item['DBSAP'].toString())),
                                             ],
                                           ),
                                         );
@@ -180,10 +167,11 @@ class _WarehousePageState extends State<WarehousePage> {
                                 ),
                               ),
                             ),
+                            const SizedBox(height: 8),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text('Página $_page of ${((_data.length / _itemsPerPage).ceil())}'),
+                                Text('Página $_page de ${((_data.length / _itemsPerPage).ceil())}'),
                                 Row(
                                   children: [
                                     IconButton(
@@ -219,4 +207,3 @@ class _WarehousePageState extends State<WarehousePage> {
     );
   }
 }
-
